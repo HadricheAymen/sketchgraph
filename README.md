@@ -20,8 +20,7 @@ JavaFX desktop application built as the *Modélisation* coursework project (fina
 6. [Data model and validation rules](#data-model-and-validation-rules)
 7. [Logging](#logging)
 8. [Project structure](#project-structure)
-9. [Known limitations](#known-limitations)
-10. [License](#license)
+9. [License](#license)
 
 ---
 
@@ -145,7 +144,7 @@ Zone (JavaFX UI)  ──►  States (model + observer)  ──►  ShapeFactory 
 | **Observer / Publish-Subscribe** | `Observable` + `Observer`, implemented by `ShapeManager` → `CanvasZone` | Selecting a tool notifies the canvas instead of the canvas polling the toolbar. |
 | **Singleton** | `ShapeManager`, `CanvasZone`, `Logger`, `StyleProvider`, `GraphicsContextProvider`, `DatabaseConnection`, `AlgorithmManager` | One model, one canvas, one graphics context, one log sink — accessed globally without threading references through every constructor. |
 | **Command (policy)** | `GraphAlgorithm` interface + `AlgorithmManager.setAlgorithm()` / `Execute()` | The single `Execute` button runs whichever algorithm is selected; algorithms are interchangeable and stateless. |
-| **Prototype** | `ShapeFactory implements Cloneable`, overridden `clone()` in both concrete factories | Declared and correct (deep copy of the two endpoint circles), **but not yet wired into any UI action** — see [known limitations](#known-limitations). |
+| **Prototype** | `ShapeFactory implements Cloneable`, overridden `clone()` in both concrete factories | Declared and correct (deep copy of the two endpoint circles), **but not yet wired into any UI action**. |
 
 ### Class diagram — shape model and its strategies
 
@@ -436,20 +435,6 @@ src/
     ├── DatabaseLogger.java
     └── DatabaseConnection.java
 ```
-
-## Known limitations
-
-Honest list, mostly because this was coursework under a deadline:
-
-- **No build tool.** IntelliJ-only setup; JavaFX must be attached manually. No tests.
-- **Prototype is unused.** `clone()` is implemented but no feature calls it, so `Restore Graph` repaints the live objects rather than snapshots.
-- **No persistence.** Closing the window loses the graph; there is no save/load format.
-- **Hardcoded geometry.** `ShapeManager.removeLastShape()` clears a fixed `900×700` rectangle regardless of the real canvas size, and the default canvas is 800×600 inside a 1000×700 scene.
-- **TSP is a heuristic.** Nearest neighbour gives a valid tour, not an optimal one — the dialog does not say so.
-- **Dijkstra queue handling** relies on `PriorityQueue.remove()`, which is `O(V)`.
-- **Single-threaded UI assumptions** — `ShapeManager.getShapes()` returns a defensive copy, but `Logger`'s static strategy and `GraphicsContextProvider`'s static context are global mutable state.
-- **Mixed-language naming** — `ValidateCercle`, `Cercle`, `Dessin de Formes Géométriques` alongside English APIs, and `higlightedLineWidth` is misspelled in `StyleProvider`.
-- **Sidebar labels are truncated** (`Minumum Spannin…`) because buttons are fixed at 130 px, and `Minumum` is misspelled in `SidebarZone`.
 
 ## License
 
